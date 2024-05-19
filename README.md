@@ -36,6 +36,6 @@ Internet speed: 1000/1000mbps (up/down)
 
 | Taal    | Requests/s | Min response tijd | Gem. responsetijd | Requests failed | Requests handled | runtime |
 |---------|------------|-------------------|-------------------|-----------------|------------------|---------|
-| Go      |            |                   |                   |                 |                  |         |
+| Go      | 67.2       | 1s                | 2.93s             | 0 (0,00%)       | 4234             | 63s     |
 | Elixir  |            |                   |                   |                 |                  |         |
 | Laravel | 5.9        | 3.01s             | 27.75s            | 7 (1,3%)        | 533              | 90s     |

@@ -1,0 +1,43 @@
+services:
+
+
+    db:
+        build:
+            context: .
+            dockerfile: Dockerfile.db
+        command: --max_connections=200000
+        restart: always
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
+            MYSQL_USER: db
+            MYSQL_PASSWORD: password
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - backend
+        ports:
+            - "3306:3306"
+    redis:
+        image: redis:latest
+        restart: always
+        networks:
+            - backend
+        ports:
+            - "6379:6379"
+    goapi:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+            - redis
+        networks:
+            - backend
+volumes:
+    db_data:
+
+networks:
+    backend:
+        driver: bridge
