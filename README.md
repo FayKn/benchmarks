@@ -7,18 +7,14 @@ Dit is een benchmark repo voor verschillende talen, ik houd het hier heel simpel
 - increment en decrement een counter in een mySQL database voor elke request
 - Cache dit resultaat in een Redis database
 ```json
-{
-  [
-    {
-      "steamID": "76561198000000000",
-      "name": "Naam"
-    },
-    {
-      "steamID": "76561198000000001",
-      "name": "Naam"
-    }
-  ]
-}
+[
+  "gabelogannewell",
+  "knol_gamer",
+  "olbmaphlee",
+  "SandsVR",
+  "SilverHazel",
+  "valvesoftware"
+]
 ```
 
 ## De benchmark
