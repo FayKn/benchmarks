@@ -4,6 +4,7 @@ Dit is een benchmark repo voor verschillende talen, ik houd het hier heel simpel
 - Haal een records op uit een steam vanity URL op uit een mySQL database
 - Strip je vanity url hier uit
 - doe een api call naar de steam api om het steamID op te halen en geef dit terug in het volgende format
+- update de SteamUsers tabel met het steamID
 - increment en decrement een counter in een mySQL database voor elke request
 - Cache dit resultaat in een Redis database
 ```json
