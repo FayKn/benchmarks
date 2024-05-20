@@ -26,13 +26,11 @@ De graceful stop staat op 30s zodat de requests die nog bezig zijn ook nog afgeh
 De docker image voor Redis en Mysql worden elke run volume en al verwijderd en opnieuw aangemaakt.
 
 ## Resultaten
-CPU: Ryzen 9 5900x
-RAM: 32GB 3200Mhz
-SSD:Lexar NM790
-OS: Windows 10 Pro 22H2 build 19045.4412
-Base steam api time: ~165ms
-Internet speed: 1000/1000mbps (up/down)
-50 ping to steam api average: 3ms
+CPU: Ryzen 9 5900x | RAM: 32GB 3200Mhz | SSD:Lexar NM790
+
+OS: Windows 10 Pro 22H2 build 19045.4412 | Docker: 26.1.1 | WSL: 2.0.14.0
+
+Base steam api time: ~165ms | Internet speed: 1000/1000mbps (up/down) | 50 ping to steam api average: 3ms
 
 | Taal    | Requests/s | Min request duration | Avr. request duration | Max request duration | Requests failed | Requests completed | runtime |
 |---------|------------|----------------------|-----------------------|----------------------|-----------------|--------------------|---------|
