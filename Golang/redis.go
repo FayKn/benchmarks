@@ -6,17 +6,23 @@ import (
 	"log"
 )
 
-// opens a connection to the Redis database
-func connectToRedis() *redis.Client {
-	// Connect to Redis
-	db := redis.NewClient(&redis.Options{
-		Addr:     getEnvVar("REDIS_HOST") + ":" + getEnvVar("REDIS_PORT"),
-		Password: getEnvVar("REDIS_PASS"),
-		DB:       0,
-	})
+var redisPool *redis.Client
 
-	return db
+func init() {
+	redisPool = redis.NewClient(&redis.Options{
+		Addr:         getEnvVar("REDIS_HOST") + ":" + getEnvVar("REDIS_PORT"),
+		Password:     getEnvVar("REDIS_PASS"),
+		DB:           0,
+		PoolSize:     10,
+		MinIdleConns: 3,
+	})
 }
+
+func connectToRedis() *redis.Client {
+	return redisPool
+}
+
+// The rest of your functions remain the same
 
 func getFromRedis(key string) string {
 	db := connectToRedis()

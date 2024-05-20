@@ -32,10 +32,10 @@ SSD:Lexar NM790
 OS: Windows 10 Pro 22H2 build 19045.4412
 Base steam api time: ~165ms
 Internet speed: 1000/1000mbps (up/down)
-50 ping to steam api average: 2ms
+50 ping to steam api average: 3ms
 
-| Taal    | Requests/s | Min response tijd | Gem. responsetijd | Requests failed | Requests handled | runtime |
-|---------|------------|-------------------|-------------------|-----------------|------------------|---------|
-| Go      | 67.2       | 1s                | 2.93s             | 0 (0,00%)       | 4234             | 63s     |
-| Elixir  |            |                   |                   |                 |                  |         |
-| Laravel | 5.9        | 3.01s             | 27.75s            | 7 (1,3%)        | 533              | 90s     |
+| Taal    | Requests/s | Min request duration | Avr. request duration | Max request duration | Requests failed | Requests completed | runtime |
+|---------|------------|----------------------|-----------------------|----------------------|-----------------|--------------------|---------|
+| Go      | 188.9      | 516.2µs              | 46.56ms               | 2.46s                | 0 (0,00%)       | 11520              | 61s     |
+| Elixir  | 188,1      | 999.4µs              | 53.03ms               | 4.18s                | 11 (0,09%)      | 11472              | 61s     |
+| Laravel | 5.5        | 9.3s                 | 28.85s                | 43.5s                | 7 (1,3%)        | 499                | 90s     |

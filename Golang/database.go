@@ -6,13 +6,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"log"
+	"time"
 )
 
-// opens a connection to the MySQL database
-func connectToDB() (*sql.DB, error) {
+var dbPool *sql.DB
+
+func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file") // Log an error and stop the program if the .env file can't be loaded
+		log.Fatal("Error loading .env file")
 	}
 
 	dbUser := getEnvVar("DB_USER")
@@ -21,13 +23,16 @@ func connectToDB() (*sql.DB, error) {
 	dbPort := getEnvVar("DB_PORT")
 	dbName := getEnvVar("DB_NAME")
 
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName))
+	dbPool, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName))
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 
-	db.SetMaxOpenConns(10) // Set the maximum number of open connections
-	db.SetMaxIdleConns(10) // Set the maximum number of idle connections
+	dbPool.SetMaxOpenConns(10)
+	dbPool.SetMaxIdleConns(10)
+	dbPool.SetConnMaxLifetime(time.Minute * 3)
+}
 
-	return db, nil
+func connectToDB() (*sql.DB, error) {
+	return dbPool, nil
 }

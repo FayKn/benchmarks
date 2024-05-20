@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -15,16 +16,19 @@ type SteamResponse struct {
 	} `json:"response"`
 }
 
+var db, err = connectToDB()
+
 func steamUsers(w http.ResponseWriter, r *http.Request) {
 	vanityNames := getVanityNamesArr()
 
-	// Update the user in the database
-	db, err := connectToDB()
+	// log DB connection error
 	if err != nil {
+		// try to connect to the database again
+		db, err = connectToDB()
+
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	defer db.Close()
 
 	var wg sync.WaitGroup
 	for _, vanityName := range vanityNames {
@@ -48,18 +52,18 @@ func steamUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func getVanityNamesArr() []string {
-	db, err := connectToDB()
-	if err != nil {
-		log.Fatal(err)
+	if db == nil {
+		var err error
+		db, err = connectToDB()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	rows, err := db.Query("SELECT VanityName FROM SteamUsers")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	defer db.Close()
-	defer rows.Close()
 
 	var vanityNames []string
 	for rows.Next() {
@@ -71,6 +75,14 @@ func getVanityNamesArr() []string {
 	}
 
 	return vanityNames
+}
+func getUsernameFromSteamUrl(url string) string {
+	parts := strings.Split(url, "/")
+	if parts[len(parts)-1] == "" {
+		parts = parts[:len(parts)-1]
+	}
+
+	return parts[len(parts)-1]
 }
 
 func fetchSteam(vanityName string) string {
@@ -96,17 +108,34 @@ func fetchSteam(vanityName string) string {
 	var sr SteamResponse
 	json.Unmarshal(body, &sr)
 
+	// update the APIsCalled table
+	updateAPIsCalled(url)
+
 	// set the SteamID in redis
 	setToRedis(url, sr.Response.SteamID)
 
 	return sr.Response.SteamID
 }
 
-func getUsernameFromSteamUrl(url string) string {
-	parts := strings.Split(url, "/")
-	if parts[len(parts)-1] == "" {
-		parts = parts[:len(parts)-1]
-	}
+func updateAPIsCalled(url string) {
+	// Check if the URL exists in the APIsCalled table
+	var count int
+	err := db.QueryRow("SELECT count FROM APIsCalled WHERE Api_url = ?", url).Scan(&count)
 
-	return parts[len(parts)-1]
+	switch {
+	case err == sql.ErrNoRows:
+		// URL does not exist, create a new record
+		_, err := db.Exec("INSERT INTO APIsCalled (Api_url, count) VALUES (?, ?)", url, 1)
+		if err != nil {
+			log.Fatal(err)
+		}
+	case err != nil:
+		log.Fatal(err)
+	default:
+		// URL exists, increment the count
+		_, err := db.Exec("UPDATE APIsCalled SET count = count + 1 WHERE Api_url = ?", url)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 }
