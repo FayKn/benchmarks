@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+    app:
+        build: .
+        command: mix run --no-halt
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+        environment:
+            - MIX_ENV=prod
+            - PORT=8000
+        networks:
+            - backend
+        ports:
+            - "8000:8000"
+
+    db:
+        build:
+            context: .
+            dockerfile: Dockerfile.db
+        command: --max_connections=200000
+        restart: always
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
+            MYSQL_USER: db
+            MYSQL_PASSWORD: password
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - backend
+        ports:
+            - "3306:3306"
+volumes:
+    db_data:
+
+networks:
+    backend:
+        driver: bridge
